@@ -2,16 +2,16 @@
   "name": "payroll-system",
   "version": "1.0.0",
   "description": "Payroll and payslip backend with Node.js, Express and Prisma",
-  "main": "src/app.js",
+  "main": "src/server.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon src/app.js",
-    "start": "node src/app.js",
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
     "seed": "node prisma/seed.js",
     "migrate": "prisma migrate dev",
     "migrate:prod": "prisma migrate deploy",
     "migrate:reset": "prisma migrate reset",
-    "test": "jest"
+    "test": "jest --detectOpenHandles"
   },
   "dependencies": {
     "@faker-js/faker": "^8.4.1",
@@ -25,12 +25,32 @@
     "winston": "^3.13.0"
   },
   "devDependencies": {
-    "jest": "^29.7.0",
+    "@babel/core": "^7.27.4",
+    "@babel/preset-env": "^7.27.2",
+    "babel-jest": "^30.0.0",
+    "jest": "^30.0.0",
     "nodemon": "^3.1.0",
-    "prisma": "^5.12.0"
+    "prisma": "^5.12.0",
+    "supertest": "^7.1.1"
   },
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/integration/auth.test.js",
+      "<rootDir>/tests/integration/payrollPeriod.test.js",
+      "<rootDir>/tests/integration/attendance.test.js",
+      "<rootDir>/tests/integration/reimbursment.test.js",
+      "<rootDir>/tests/integration/overtime.test.js",
+      "<rootDir>/tests/integration/payroll.test.js"
+    ],
+    "transform": {
+      "^.+\\.js$": "babel-jest"
+    }
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ]
   },
   "keywords": [],
   "author": "walyxxi",

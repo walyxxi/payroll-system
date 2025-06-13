@@ -74,9 +74,6 @@ export const getPayrollPeriodById = async (req, res, next) => {
  */
 export const updatePayrollPeriod = async (req, res, next) => {
   try {
-    if (req.user.role !== "admin") {
-      return res.status(403).json({ message: "Forbidden: Admins only." });
-    }
     const { id } = req.params;
     const { start_date, end_date } = req.body;
 
@@ -117,9 +114,6 @@ export const updatePayrollPeriod = async (req, res, next) => {
  */
 export const deletePayrollPeriod = async (req, res, next) => {
   try {
-    if (req.user.role !== "admin") {
-      return res.status(403).json({ message: "Forbidden: Admins only." });
-    }
     const { id } = req.params;
     const oldPeriod = await prisma.payroll_periods.findUnique({
       where: { id: Number(id) },
@@ -134,14 +128,14 @@ export const deletePayrollPeriod = async (req, res, next) => {
 
     await auditLog(req, {
       table_name: "payroll_periods",
-      record_id: period.id,
+      record_id: id,
       action: "delete",
     });
 
     logger.info(
       `Payroll period deleted by admin ${req.user.username}: id=${id}`
     );
-    res.json({ success: true });
+    res.json({ success: true, message: "Payroll period deleted", id });
   } catch (err) {
     next(err);
   }
