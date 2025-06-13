@@ -1,0 +1,32 @@
+openapi: 3.0.0
+info:
+  title: Attendance API
+  version: 1.0.0
+tags:
+  - name: Attendance
+paths:
+  /api/attendance:
+    post:
+      summary: Submit attendance (employee only)
+      tags: [Attendance]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Attendance"
+      responses:
+        "201":
+          description: Attendance submitted
+
+components:
+  schemas:
+    Attendance:
+      type: object
+      properties:
+        payroll_period_id:
+          type: integer
+          example: 12
+        date:
+          type: string
+          format: date

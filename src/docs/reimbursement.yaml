@@ -1,0 +1,39 @@
+openapi: 3.0.0
+info:
+  title: Reimbursement API
+  version: 1.0.0
+tags:
+  - name: Reimbursement
+paths:
+  /api/reimbursement:
+    post:
+      summary: Submit reimbursement (employee only)
+      tags: [Reimbursement]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Reimbursement"
+      responses:
+        "201":
+          description: Reimbursement submitted
+
+components:
+  schemas:
+    Reimbursement:
+      type: object
+      properties:
+        payroll_period_id:
+          type: integer
+          example: 123
+        amount:
+          type: number
+          example: 1500000
+        description:
+          type: string
+          example: "Travel expenses for business trip"
+        date:
+          type: string
+          format: date
+          example: "2025-06-01"

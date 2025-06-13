@@ -1,0 +1,40 @@
+openapi: 3.0.0
+info:
+  title: Overtime API
+  version: 1.0.0
+tags:
+  - name: Overtime
+paths:
+  /api/overtime:
+    post:
+      summary: Submit overtime (employee only)
+      tags: [Overtime]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Overtime"
+      responses:
+        "201":
+          description: Overtime submitted
+
+components:
+  schemas:
+    Overtime:
+      type: object
+      properties:
+        payroll_period_id:
+          type: integer
+          format: date
+          example: 12
+        date:
+          type: string
+          format: date
+          example: "2025-06-01"
+        hours:
+          type: number
+          example: 2.5
+        description:
+          type: string
+          example: "Worked extra hours on project X"

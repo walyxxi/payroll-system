@@ -1,0 +1,55 @@
+openapi: 3.0.0
+info:
+  title: Payroll API
+  version: 1.0.0
+tags:
+  - name: Payroll
+paths:
+  /api/payroll/{payroll_period_id}/run:
+    post:
+      summary: Run payroll for period (admin only)
+      tags: [Payroll]
+      parameters:
+        - in: path
+          name: payroll_period_id
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        required: false
+      responses:
+        "201":
+          description: Payroll processed
+  /api/payroll/{payroll_period_id}/payslip/{employee_id}:
+    get:
+      summary: Get payslip by employee ID (employee only)
+      tags: [Payroll]
+      parameters:
+        - in: path
+          name: payroll_period_id
+          schema:
+            type: integer
+          required: true
+        - in: path
+          name: employee_id
+          schema:
+            type: integer
+          required: true
+      responses:
+        "200":
+          description: Payslip detail
+        "404":
+          description: Not found
+  /api/payroll/{payroll_period_id}/payslips/summary:
+    get:
+      summary: Get payslips summary for period (admin only)
+      tags: [Payroll]
+      parameters:
+        - in: path
+          name: payroll_period_id
+          schema:
+            type: integer
+          required: true
+      responses:
+        "200":
+          description: Payslips summary

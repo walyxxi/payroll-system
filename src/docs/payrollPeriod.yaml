@@ -1,0 +1,77 @@
+openapi: 3.0.0
+info:
+  title: Payroll Period API
+  version: 1.0.0
+tags:
+  - name: PayrollPeriod
+paths:
+  /api/payroll-period:
+    post:
+      summary: Create a payroll period (admin only)
+      tags: [PayrollPeriod]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PayrollPeriod"
+      responses:
+        "201":
+          description: Created
+    get:
+      summary: Get all payroll periods
+      tags: [PayrollPeriod]
+      responses:
+        "200":
+          description: List of payroll periods
+  /api/payroll-period/{id}:
+    get:
+      summary: Get payroll period by ID
+      tags: [PayrollPeriod]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        "200":
+          description: Payroll period detail
+        "404":
+          description: Not found
+    patch:
+      summary: Update payroll period (admin only)
+      tags: [PayrollPeriod]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        "200":
+          description: Updated
+    delete:
+      summary: Delete payroll period (admin only)
+      tags: [PayrollPeriod]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        "204":
+          description: Deleted
+
+components:
+  schemas:
+    PayrollPeriod:
+      type: object
+      properties:
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
