@@ -73,7 +73,7 @@ README.md
      - `DB_URL` or similar: Your database connection string
      - Any additional keys specific to your environment
 
-4. **Run database migrations (if applicable):**
+4. **Run database migrations:**
 
    - If your project uses migrations, apply them here:
      ```bash
@@ -81,7 +81,15 @@ README.md
      ```
    - _Skip this step if not applicable._
 
-5. **Run the server:**
+5. **Seed the database (if applicable):**
+
+   - If your project has seed data, run:
+     ```bash
+     npm run seed
+     ```
+   - _Skip this step if not applicable._
+
+6. **Run the server:**
    ```bash
    npm start
    ```
