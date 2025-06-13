@@ -6,10 +6,6 @@ import path from "path";
 import routes from "./routes/index.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { ipAddressMiddleware } from "./middleware/ipAddress.js";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // Function to merge all YAML files in src/docs/
 function loadAndMergeSwaggerDocs(dirPath) {
@@ -50,7 +46,7 @@ function loadAndMergeSwaggerDocs(dirPath) {
   }
   return merged;
 }
-const swaggerDocument = loadAndMergeSwaggerDocs(path.join(__dirname, "docs"));
+const swaggerDocument = loadAndMergeSwaggerDocs("src/docs");
 
 const app = express();
 
