@@ -1,21 +1,22 @@
 import express from "express";
-import bodyParser from "body-parser";
-import dotenv from "dotenv";
-
-dotenv.config();
-
-import userRoutes from "./routes/userRoutes.js";
+import routes from "./routes/index.js";
+import { errorHandler } from "./middleware/errorHandler.js";
+import { ipAddressMiddleware } from "./middleware/ipAddress.js";
+import { logger } from "./utils/logger.js";
 
 const app = express();
 
-app.use(bodyParser.json());
+app.set("trust proxy", true);
 
-// Example route
-app.use("/users", userRoutes);
+app.use(express.json());
+app.use(ipAddressMiddleware);
+app.use("/api", routes);
 
-// Health check
-app.get("/", (req, res) => {
-  res.json({ status: "OK", service: "Payroll System API" });
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  logger.info(`Server running on port ${PORT}`);
 });
+
+app.use(errorHandler);
 
 export default app;

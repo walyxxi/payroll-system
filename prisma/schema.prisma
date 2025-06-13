@@ -1,0 +1,119 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model payroll_periods {
+  id         Int      @id @default(autoincrement())
+  start_date DateTime
+  end_date   DateTime
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  created_by Int?
+  updated_by Int?
+
+  attendance     attendance[]
+  overtime       overtime[]
+  reimbursements reimbursements[]
+  payslips       payslips[]
+}
+
+model users {
+  id            Int      @id @default(autoincrement())
+  username      String   @unique
+  password_hash String
+  role          String
+  salary        Decimal
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+  created_by    Int?
+  updated_by    Int?
+
+  attendance     attendance[]
+  overtime       overtime[]
+  reimbursements reimbursements[]
+  payslips       payslips[]
+  audit_log      audit_log[]      @relation("UserAuditLogs")
+}
+
+model attendance {
+  id                Int      @id @default(autoincrement())
+  user_id           Int
+  payroll_period_id Int
+  date              DateTime
+  request_ip        String?
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+  created_by        Int?
+  updated_by        Int?
+
+  users           users           @relation(fields: [user_id], references: [id])
+  payroll_periods payroll_periods @relation(fields: [payroll_period_id], references: [id])
+}
+
+model overtime {
+  id                Int      @id @default(autoincrement())
+  user_id           Int
+  payroll_period_id Int
+  date              DateTime
+  hours             Decimal
+  request_ip        String?
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+  created_by        Int?
+  updated_by        Int?
+
+  users           users           @relation(fields: [user_id], references: [id])
+  payroll_periods payroll_periods @relation(fields: [payroll_period_id], references: [id])
+}
+
+model reimbursements {
+  id                Int      @id @default(autoincrement())
+  user_id           Int
+  payroll_period_id Int
+  date              DateTime
+  amount            Decimal
+  description       String
+  request_ip        String?
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+  created_by        Int?
+  updated_by        Int?
+
+  users           users           @relation(fields: [user_id], references: [id])
+  payroll_periods payroll_periods @relation(fields: [payroll_period_id], references: [id])
+}
+
+model payslips {
+  id                  Int      @id @default(autoincrement())
+  user_id             Int
+  payroll_period_id   Int
+  base_salary         Decimal
+  attendance_days     Int
+  overtime_pay        Decimal
+  reimbursement_total Decimal
+  take_home_pay       Decimal
+  detail              Json?
+  created_at          DateTime @default(now())
+
+  users           users           @relation(fields: [user_id], references: [id])
+  payroll_periods payroll_periods @relation(fields: [payroll_period_id], references: [id])
+}
+
+model audit_log {
+  id           Int      @id @default(autoincrement())
+  table_name   String
+  record_id    Int
+  action       String
+  performed_by Int
+  created_at   DateTime @default(now())
+  request_ip   String?
+  detail       Json?
+  request_id   String?
+
+  users users @relation("UserAuditLogs", fields: [performed_by], references: [id])
+}
