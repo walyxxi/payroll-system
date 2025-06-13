@@ -10,8 +10,10 @@ function randomUsername(idx) {
 }
 
 function randomSalary() {
-  // Salary between 3000 and 7000, rounded to 2 decimals
-  return Math.round((3000 + Math.random() * 4000) * 100) / 100;
+  // Salary between 5m and 10m rupiah, in thousands
+  const min = 5000000;
+  const max = 10000000;
+  return Math.floor(Math.random() * ((max - min) / 1000 + 1)) * 1000 + min;
 }
 
 const main = async () => {
@@ -25,7 +27,7 @@ const main = async () => {
       username: "adminuser",
       password_hash: adminPassword,
       role: "admin",
-      salary: 15000,
+      salary: randomSalary(),
       created_by: null,
       updated_by: null,
     },

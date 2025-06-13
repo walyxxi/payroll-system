@@ -12,7 +12,7 @@ router.use("/auth", authRoutes);
 router.use("/payroll-period", payrollPeriodRoutes);
 router.use("/attendance", attendanceRoutes);
 router.use("/overtime", overtimeRoutes);
-router.use("/reimbursements", reimbursementRoutes);
+router.use("/reimbursement", reimbursementRoutes);
 router.use("/payroll", payrollRoutes);
 
 export default router;

@@ -10,4 +10,7 @@ export const overtimeSchema = Joi.object({
     "number.min": "Overtime must be at least 0.1 hour.",
     "any.required": "hours is required",
   }),
+  description: Joi.string().max(255).required().messages({
+    "any.required": "description is required",
+  }),
 });

@@ -11,7 +11,7 @@ import {
 const router = express.Router();
 
 router.post(
-  "/:payroll_period_id/generate",
+  "/:payroll_period_id/run",
   requireAuth,
   requireRole("admin"),
   validate(payrollRunSchema, "params"),

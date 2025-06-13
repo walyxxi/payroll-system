@@ -1,11 +1,10 @@
+import { auditLog } from "../utils/auditLog.js";
 import { prisma } from "../utils/prisma.js";
 
 export const submitAttendance = async (req, res, next) => {
   try {
-    const payroll_period_id = req.body.payroll_period_id;
-    // Use provided date or today
-    const today = new Date();
-    const dateStr = req.body.date || today.toISOString().slice(0, 10);
+    const { date, payroll_period_id } = req.body;
+    const dateStr = new Date(date || "");
 
     // Check if weekend
     const dateObj = new Date(dateStr);

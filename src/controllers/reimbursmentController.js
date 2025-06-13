@@ -1,10 +1,10 @@
+import { auditLog } from "../utils/auditLog.js";
 import { prisma } from "../utils/prisma.js";
 
 export const submitReimbursement = async (req, res, next) => {
   try {
     const { payroll_period_id, amount, description, date } = req.body;
-    const today = new Date();
-    const dateStr = date || today.toISOString().slice(0, 10);
+    const dateStr = new Date(date || "");
 
     // Save reimbursement
     const reimbursement = await prisma.reimbursements.create({

@@ -3,11 +3,8 @@ import { prisma } from "../utils/prisma.js";
 
 export const submitOvertime = async (req, res, next) => {
   try {
-    const payroll_period_id = req.body.payroll_period_id;
-    const hours = req.body.hours;
-    // Use provided date or today
-    const today = new Date();
-    const dateStr = req.body.date || today.toISOString().slice(0, 10);
+    const { date, hours, payroll_period_id, description } = req.body;
+    const dateStr = new Date(date || "");
 
     // Check total overtime for this user on this date
     const existingOvertime = await prisma.overtime.findFirst({
@@ -16,14 +13,14 @@ export const submitOvertime = async (req, res, next) => {
         date: dateStr,
       },
     });
+
     if (existingOvertime) {
-      const totalHours = (existingOvertime.hours || 0) + hours;
+      const totalHours = (Number(existingOvertime.hours) || 0) + hours;
       if (totalHours > 3) {
         return res
           .status(400)
           .json({ message: "Total overtime cannot exceed 3 hours per day." });
       }
-      // Optionally, you could update the existing record instead of creating a new one.
     }
 
     // Save overtime
@@ -33,6 +30,7 @@ export const submitOvertime = async (req, res, next) => {
         payroll_period_id,
         date: dateStr,
         hours,
+        description,
         request_ip: req.ipAddress || req.ip,
         created_by: req.user.userId,
         updated_by: req.user.userId,

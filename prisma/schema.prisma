@@ -61,6 +61,7 @@ model overtime {
   payroll_period_id Int
   date              DateTime
   hours             Decimal
+  description       String
   request_ip        String?
   created_at        DateTime @default(now())
   updated_at        DateTime @updatedAt

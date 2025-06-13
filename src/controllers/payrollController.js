@@ -49,6 +49,7 @@ export const runPayrolls = async (req, res, next) => {
     // Build payslips
     const payslips = [];
     for (const emp of employees) {
+      // Limit to first 5 for debugging
       const userAttendance = attendanceList.filter((a) => a.user_id === emp.id);
       const userOvertime = overtimeList.filter((o) => o.user_id === emp.id);
       const userReimbursements = reimbursementList.filter(
@@ -57,28 +58,32 @@ export const runPayrolls = async (req, res, next) => {
 
       const attendanceDays = userAttendance.length;
       const overtimeTotalHours = userOvertime.reduce(
-        (sum, o) => sum + (o.hours || 0),
+        (sum, o) => sum + (Number(o.hours) || 0),
         0
       );
-      const hourlyRate = emp.salary ? emp.salary / 173 : 0; // 173 = standard monthly hours
-      const overtime_rate =
-        overtimeTotalHours === 1
-          ? 1.5 * hourlyRate
-          : 1.5 * hourlyRate + (overtimeTotalHours - 1) * 2 * hourlyRate; // Default to 1 if not set
-      const overtimePay =
-        overtimeTotalHours * (overtime_rate || 1) * hourlyRate;
+      const salary = Number(emp.salary) || 0;
+      const hourlyRate = salary ? Math.round(salary / 173) : 0; // 173 = standard monthly hours
+
+      let overtimePay = 0;
+      if (overtimeTotalHours === 1) overtimePay = 1.5 * hourlyRate;
+      if (overtimeTotalHours > 1)
+        overtimePay = Math.round(
+          1.5 * hourlyRate + (overtimeTotalHours - 1) * 2 * hourlyRate
+        );
+      else overtimePay = 0;
+
       const reimbursementTotal = userReimbursements.reduce(
-        (sum, r) => sum + (r.amount || 0),
+        (sum, r) => sum + (Number(r.amount) || 0),
         0
       );
 
       // For example purposes, take-home pay = base salary + overtime + reimbursement
-      const takeHomePay = (emp.salary || 0) + overtimePay + reimbursementTotal;
+      const takeHomePay = (salary || 0) + overtimePay + reimbursementTotal;
 
       payslips.push({
         user_id: emp.id,
         payroll_period_id: periodId,
-        base_salary: emp.salary || 0,
+        base_salary: salary || 0,
         attendance_days: attendanceDays,
         overtime_pay: overtimePay,
         reimbursement_total: reimbursementTotal,
@@ -98,10 +103,10 @@ export const runPayrolls = async (req, res, next) => {
     });
 
     await auditLog(req, {
-      table_name: "payslip",
+      table_name: "payslips",
       record_id: periodId,
       action: "run-payroll",
-      details: {
+      detail: {
         payroll_period_id: periodId,
         payslips_created: payslips.length,
       },
@@ -151,14 +156,14 @@ export const getPayslipByEmployeeId = async (req, res, next) => {
     res.json({
       payroll_period_id,
       user_id,
-      base_salary,
-      attendance_days,
-      overtime_pay,
-      reimbursement_total,
+      base_salary: Number(base_salary) || 0,
+      attendance_days: Number(attendance_days) || 0,
+      overtime_pay: Number(overtime_pay) || 0,
+      reimbursement_total: Number(reimbursement_total) || 0,
+      take_home_pay: Number(take_home_pay) || 0,
       reimbursements: detail?.reimbursements || [],
       attendance: detail?.attendance || [],
       overtime: detail?.overtime || [],
-      take_home_pay,
       // You can format breakdown as needed for the frontend
       breakdown: {
         base_salary,
@@ -194,7 +199,7 @@ export const generatePayslipsSummary = async (req, res, next) => {
     const payslips = await prisma.payslips.findMany({
       where: { payroll_period_id },
       include: {
-        user: {
+        users: {
           select: { id: true, username: true },
         },
       },
@@ -208,12 +213,12 @@ export const generatePayslipsSummary = async (req, res, next) => {
 
     const summary = payslips.map((p) => ({
       user_id: p.user_id,
-      username: p.user?.username || null,
-      take_home_pay: p.take_home_pay,
+      username: p.users?.username || null,
+      take_home_pay: Number(p.take_home_pay),
     }));
 
     const total_take_home_pay = summary.reduce(
-      (sum, p) => sum + (p.take_home_pay || 0),
+      (sum, p) => sum + (Number(p.take_home_pay) || 0),
       0
     );
 
