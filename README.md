@@ -20,7 +20,29 @@ This project is a RESTful API for managing payroll, attendance, overtime, reimbu
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/) (v16 or above recommended)
-- npm
+- npm/yarn
+
+---
+
+## Project Structure
+
+```
+prisma/           # Contains Prisma schema and migration files
+src/              # Application source code
+  docs/           # OpenAPI YAML files (e.g., index.yaml, auth.yaml)
+  controllers/    # Business logic for handling requests
+  middleware/     # Express middleware functions
+  routes/         # Express route handlers
+  utils/          # Utility/helper functions
+  validation/     # Joi validation for request body/params/query
+  app.js          # Express app entry point
+  server.js       # Express server startup script
+tests/            # Automated and manual test cases
+.env.example      # Example environment variable file
+.gitignore        # Ignore files and folders that should not be committed to the repository
+package.json
+README.md
+```
 
 ---
 
@@ -69,31 +91,15 @@ This project is a RESTful API for managing payroll, attendance, overtime, reimbu
 
 ## API Documentation
 
-- Once the server is running, visit [http://localhost:3000/api-docs](http://localhost:3000/api-docs) in your browser.
-- Use the "Authorize" button to enter your JWT token after login to access protected endpoints.
-- The documentation is generated from the OpenAPI YAML files in `src/docs/`.
+To view and interact with the API documentation:
 
----
+1. **Open your browser**  
+   Go to: [http://localhost:3000/api-docs](http://localhost:3000/api-docs)  
+   _(Replace `3000` with your port if different)_
 
-## Project Structure
-
-```
-prisma/           # Contains Prisma schema and migration files
-src/              # Application source code
-  docs/           # OpenAPI YAML files (e.g., index.yaml, auth.yaml)
-  controllers/    # Business logic for handling requests
-  middleware/     # Express middleware functions
-  routes/         # Express route handlers
-  utils/          # Utility/helper functions
-  validation/     # Joi validation for request body/params/query
-  app.js          # Express app entry point
-  server.js       # Express server startup script
-tests/            # Automated and manual test cases
-.env.example      # Example environment variable file
-.gitignore        # Ignore files and folders that should not be committed to the repository
-package.json
-README.md
-```
+2. **Interact with the docs**
+   - Use the "Authorize" button to set your JWT token after logging in.
+   - You can try out all endpoints directly from the Swagger UI.
 
 ---
 
@@ -105,37 +111,6 @@ README.md
 - After logging in, use the JWT token as a Bearer token in the Authorization header for all subsequent requests.
 
 ---
-
-## Environment Variables
-
-The `.env` file contains configuration values for your environment.  
-**To set it up:**
-
-1. Copy the example file:
-   ```bash
-   cp .env.example .env
-   ```
-2. Edit `.env` and provide values for necessary keys, such as:
-   - `PORT=3000`
-   - `JWT_SECRET=your_jwt_secret`
-   - `DB_URL=your_database_url`
-   - (add any other required keys)
-
----
-
----
-
-## How to Access API Documentation
-
-To view and interact with the API documentation:
-
-1. **Open your browser**  
-   Go to: [http://localhost:3000/api-docs](http://localhost:3000/api-docs)  
-   _(Replace `3000` with your port if different)_
-
-2. **Interact with the docs**
-   - Use the "Authorize" button to set your JWT token after logging in.
-   - You can try out all endpoints directly from the Swagger UI.
 
 ## Contributing
 
